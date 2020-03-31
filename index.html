@@ -150,7 +150,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-tw">
-    <link itemprop="mainEntityOfPage" href="https://tommylibra.github.io/2020/03/a-way-to-across-gfw-for-free/">
+    <link itemprop="mainEntityOfPage" href="https://tommylibra.github.io/2020/03/a-way-to-cross-gfw-for-free/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -164,7 +164,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/a-way-to-across-gfw-for-free/" class="post-title-link" itemprop="url">如何（免费）自建梯子：Trojan</a>
+            <a href="/2020/03/a-way-to-cross-gfw-for-free/" class="post-title-link" itemprop="url">如何（免费）自建梯子：Trojan</a>
         </h1>
 
         <div class="post-meta">
@@ -175,7 +175,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-03-31 02:55:31 / Modified: 03:05:14" itemprop="dateCreated datePublished" datetime="2020-03-31T02:55:31+08:00">2020-03-31</time>
+              <time title="Created: 2020-03-31 02:55:31 / Modified: 15:13:23" itemprop="dateCreated datePublished" datetime="2020-03-31T02:55:31+08:00">2020-03-31</time>
             </span>
 
           
@@ -203,7 +203,7 @@
 <p>本文的目的是介绍<a href="https://www.atrandys.com/2019/1963.html" target="_blank" rel="noopener">一键脚本</a>（下称「一键脚本」）的安装方式，可以省去不少步骤。（安全性？我不担保，自行辨别）</p>
 <h4 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h4><p>一台电脑，一个能够翻墙的网络<del>，一个脑子</del>。如果你想要免费搭建，那么还要一个绑定了（外币）信用卡的谷歌帐户，这是因为目前可以前往 <a href="https://cloud.google.com" target="_blank" rel="noopener">https://cloud.google.com</a> 领取价值300美元的为期一年的谷歌云服务免费试用。</p>
 <h4 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h4><h5 id="1-免费申请or购买VPS"><a href="#1-免费申请or购买VPS" class="headerlink" title="1. 免费申请or购买VPS"></a>1. 免费申请or购买VPS</h5><p>如果你不满足薅谷歌云羊毛条件，那么可以<a href="https://trojan-tutor.github.io/2019/04/10/p41.html#vps%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B4%AD%E4%B9%B0" target="_blank" rel="noopener">购买 Vultr 的VPS</a>（约 $5 一个月）。</p>
-<p>如果满足，那么就可以在谷歌云里申请VPS了，看<a href="https://youtu.be/HytuSwW90rI?t=196" target="_blank" rel="noopener">这个YouTube视频</a>（下称「视频」）（我就主要看这个视频的指导及相关链接搭建的）。选CentOS7，最简配置即可。</p>
+<p>如果满足，那么就可以在谷歌云里申请VPS了，看<a href="https://youtu.be/HytuSwW90rI?t=196" target="_blank" rel="noopener">这个YouTube视频</a>（下称「视频」）（我就主要是看这个视频的指导及相关链接搭建的）。选CentOS7，最简配置即可。</p>
 <h5 id="2-免费申请or购买域名"><a href="#2-免费申请or购买域名" class="headerlink" title="2. 免费申请or购买域名"></a>2. 免费申请or购买域名</h5><p>我试了申请免费域名，成功且可用，因此你也可以试试，能省钱何乐不为。</p>
 <p>按上面教程文里的 <a href="https://trojan-tutor.github.io/2019/04/10/p41.html#%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7%E4%B8%8E%E8%A7%A3%E6%9E%90" target="_blank" rel="noopener">4. 域名申请与解析</a>（<strong>注意！</strong>不要按它后半部分说的注册 cloudflare 并将DNS服务器转移过去，否则本文后面步骤会失败）前往 <a href="https://www.freenom.com/" target="_blank" rel="noopener">https://www.freenom.com/</a> 申请。</p>
 <p><strong>免费域名总是申请失败？</strong></p>
@@ -216,6 +216,7 @@
 <p>主要内容：一安装trojan，输入完整域名（example.xx.cc）完成安装（会有一个zip文档生成，点击下载方便后面配置客户端）；二安装BBR加速内核；三启用BBR加速。</p>
 <h5 id="5-配置客户端，享受使用吧"><a href="#5-配置客户端，享受使用吧" class="headerlink" title="5. 配置客户端，享受使用吧"></a>5. 配置客户端，享受使用吧</h5><p>全平台可用，电脑上会稍复杂。看视频或者这里 <a href="https://www.hijk.pw/trojan-clients/" target="_blank" rel="noopener">https://www.hijk.pw/trojan-clients/</a></p>
 <p>其中配置文件 config.json 中的密码可以在第4步从服务器下载的文件里找到。</p>
+<p>搭建成以后，就不光可以自己用，还可以共享给朋友了！还可以出租销售（多用户的脚本也有人发布了）。当然，要注意规避“提供侵入、非法控制计算机信息系统的程序、工具罪”。</p>
 <p>我写到这里才发现已有专业简要的文字教程，也可移步参考 <a href="https://www.hijk.pw/trojan-one-click-scrip/" target="_blank" rel="noopener">https://www.hijk.pw/trojan-one-click-scrip/</a></p>
 
       
