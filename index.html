@@ -150,93 +150,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-tw">
-    <link itemprop="mainEntityOfPage" href="https://tommylibra.github.io/2020/03/a-way-to-cross-gfw-for-free/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Tommy">
-      <meta itemprop="description" content="blog,personal">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="落英">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/a-way-to-cross-gfw-for-free/" class="post-title-link" itemprop="url">如何（免费）自建梯子：Trojan</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
-
-              <time title="Created: 2020-03-31 02:55:31 / Modified: 15:19:42" itemprop="dateCreated datePublished" datetime="2020-03-31T02:55:31+08:00">2020-03-31</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>引言：梯子是一种可以用来翻墙的东西。网络上的「梯子」可以翻越网络上的「墙」；网络上的「墙」，通常指 PRC 政府在其互联网边界布置的审查系统，常称 <a href="https://zh.wikipedia.org/wiki/gfw" target="_blank" rel="noopener">GFW</a> ，它阻断境内到几乎所有的境外主流网站的连接。虽然时间永是流逝，街市依旧太平，但是我想想，怎么想这都是一件 horrible 的事情。比如说，世界最大的在线百科站点维基百科 wikipedia.org 就是约九亿中国网民无法直接访问的……</p>
-<p>考虑到本文的内容是面向进阶用户的，也就是已经有翻墙经历，有一定计算机基础知识，但又希望有更好用更经济的翻墙工具的群体，就不多科普直接进入正题吧。不过这仍然是一篇引导介绍文，笔者懂得很有限；因为自己试过很好用而来推荐一下而已。</p>
-</blockquote>
-<h4 id="为什么选-Trojan？"><a href="#为什么选-Trojan？" class="headerlink" title="为什么选 Trojan？"></a>为什么选 Trojan？</h4><p>笼统地说，<a href="https://github.com/trojan-gfw/trojan" target="_blank" rel="noopener">Trojan</a> 是一种新的可以用来翻墙的工具/协议，相比于更早出现的 Shadowsock（SS），ShadowsockR（SSR），V2Ray，它目前更不易被封锁连接，传输速度也更快（经实测几乎可以达到宽带网速上限，播放油管 8K 视频不卡）。我用了两周，一直能稳定高速访问。</p>
-<p><strong>为什么要自建？</strong></p>
-<ol>
-<li>目前支持此种协议的机场还很少。</li>
-<li>参阅 <a href="https://eatradish.github.io/why-dont-I-recommand-using-the-airport/" target="_blank" rel="noopener">为什么我不推荐使用第三方翻墙服务（又叫机场）</a></li>
-</ol>
-<h4 id="如何上手？"><a href="#如何上手？" class="headerlink" title="如何上手？"></a><strong>如何上手？</strong></h4><p>一个完善且正规的教程是这篇：<a href="https://trojan-tutor.github.io/2019/04/10/p41.html" target="_blank" rel="noopener">自建梯子教程 –Trojan版本</a>（下称「教程文」）。附带了原理介绍和详细流程，可以移步了解。</p>
-<p>本文的目的是介绍<a href="https://www.atrandys.com/2019/1963.html" target="_blank" rel="noopener">一键脚本</a>（下称「一键脚本」）的安装方式，可以省去不少步骤。（安全性？我不担保，自行辨别）</p>
-<h4 id="准备条件"><a href="#准备条件" class="headerlink" title="准备条件"></a>准备条件</h4><p>一台电脑，一个能够翻墙的网络<del>，一个脑子</del>。如果你想要免费搭建，那么还要一个绑定了（外币）信用卡的谷歌帐户，这是因为目前可以前往 <a href="https://cloud.google.com" target="_blank" rel="noopener">https://cloud.google.com</a> 领取价值300美元的为期一年的谷歌云服务免费试用。</p>
-<h4 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h4><h5 id="1-免费申请or购买VPS"><a href="#1-免费申请or购买VPS" class="headerlink" title="1. 免费申请or购买VPS"></a>1. 免费申请or购买VPS</h5><p>如果你不满足薅谷歌云羊毛条件，那么可以<a href="https://trojan-tutor.github.io/2019/04/10/p41.html#vps%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%B4%AD%E4%B9%B0" target="_blank" rel="noopener">购买 Vultr 的VPS</a>（约 $5 一个月）。</p>
-<p>如果满足，那么就可以在谷歌云里申请VPS了，看<a href="https://youtu.be/HytuSwW90rI?t=196" target="_blank" rel="noopener">这个YouTube视频</a>（下称「视频」）（我就主要是看这个视频的指导及相关链接搭建的）。选CentOS7，最简配置即可。</p>
-<h5 id="2-免费申请or购买域名"><a href="#2-免费申请or购买域名" class="headerlink" title="2. 免费申请or购买域名"></a>2. 免费申请or购买域名</h5><p>我试了申请免费域名，成功且可用，因此你也可以试试，能省钱何乐不为。</p>
-<p>按上面教程文里的 <a href="https://trojan-tutor.github.io/2019/04/10/p41.html#%E5%9F%9F%E5%90%8D%E7%94%B3%E8%AF%B7%E4%B8%8E%E8%A7%A3%E6%9E%90" target="_blank" rel="noopener">4. 域名申请与解析</a>（<strong>注意！</strong>不要按它后半部分说的注册 cloudflare 并将DNS服务器转移过去，否则本文后面步骤会失败）前往 <a href="https://www.freenom.com/" target="_blank" rel="noopener">https://www.freenom.com/</a> 申请。</p>
-<p><strong>免费域名总是申请失败？</strong></p>
-<p>参考这个知乎回答：2020年最新Freenom免费顶级域名申请 - LK外贸建站日记的文章 - 知乎 <a href="https://zhuanlan.zhihu.com/p/109553641" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/109553641</a></p>
-<p>除此以外，你可能需要不使用代理直接访问 freenom。</p>
-<p>或者 就去 namesilo，namecheap 等地方付费买一个，也不贵。</p>
-<h5 id="3-域名解析"><a href="#3-域名解析" class="headerlink" title="3. 域名解析"></a>3. 域名解析</h5><p>在域名服务商的DNS设置那里添加A记录，指向 VPS 的 IP，host 值最好要填一下，www或别的自定义字符（推荐这种）。——如果你是用的 freenom 免费域名，像视频那样操作可能会不行。</p>
-<p><strong>假设</strong>你填的host是 example，申请的域名是 xx.cc，那么几分钟以后二级域名 example.xx.cc 就会解析到你的 VPS 上。</p>
-<h5 id="4-用一键脚本在VPS上部署Trojan"><a href="#4-用一键脚本在VPS上部署Trojan" class="headerlink" title="4. 用一键脚本在VPS上部署Trojan"></a>4. 用一键脚本在VPS上部署Trojan</h5><p>按<a href="https://youtu.be/HytuSwW90rI?t=301" target="_blank" rel="noopener">视频这里开始</a>操作，（域名准备部分可快进），<a href="https://www.atrandys.com/2019/1963.html" target="_blank" rel="noopener">一键脚本代码从这里复制</a>。</p>
-<p>主要内容：一安装trojan，输入完整域名（example.xx.cc）完成安装（会有一个zip文档生成，点击下载方便后面配置客户端）；二安装BBR加速内核；三启用BBR加速。</p>
-<h5 id="5-配置客户端，享受使用吧"><a href="#5-配置客户端，享受使用吧" class="headerlink" title="5. 配置客户端，享受使用吧"></a>5. 配置客户端，享受使用吧</h5><p>全平台可用，电脑上会稍复杂。看视频或者这里 <a href="https://www.hijk.pw/trojan-clients/" target="_blank" rel="noopener">https://www.hijk.pw/trojan-clients/</a></p>
-<p>其中配置文件 config.json 中的密码可以在第4步从服务器下载的文件里找到。</p>
-<p>搭建成以后，就不光可以自己用，还可以共享给朋友了！还可以出租销售（多用户的脚本也有人发布了）。<del>当然，要注意规避“提供侵入、非法控制计算机信息系统的程序、工具罪”或“擅自建立、使用非法定信道进行国际联网”。</del></p>
-<p>我写到这里才发现已有专业简要的文字教程，也可移步参考 <a href="https://www.hijk.pw/trojan-one-click-scrip/" target="_blank" rel="noopener">https://www.hijk.pw/trojan-one-click-scrip/</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-tw">
     <link itemprop="mainEntityOfPage" href="https://tommylibra.github.io/2020/03/poem-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -454,7 +367,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-count">2</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -463,7 +376,7 @@
         <span class="site-state-item-name">categories</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
