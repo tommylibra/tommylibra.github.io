@@ -25,7 +25,7 @@
 <meta property="og:description" content="Windows 平臺上真·远程桌面的意思是，只要 PC 接入了互联网开着机，就可以用另一台設備通過互联网從世界任意角落访问使用它。然而，PC 的 IPv4 地址不固定为此带来了麻煩。FRP 内网穿透技术是一種应对方案。DDNS（動態DNS）技术是另一种（當然其用途不止远程桌面）。原理上來說，後者更简洁，流量不像前者需要经过中转服务器。然而，由於國內的电信运营商（例如我所用的移动家宽）甚至连動態公网">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2024-08-12T08:30:05.000Z">
-<meta property="article:modified_time" content="2024-08-12T08:38:18.726Z">
+<meta property="article:modified_time" content="2024-08-12T14:45:56.057Z">
 <meta property="article:author" content="Tommy">
 <meta property="article:tag" content="tech">
 <meta name="twitter:card" content="summary_large_image">
@@ -303,7 +303,7 @@
 <p>在路由器管理界面“系统 -&gt; 软件包”，点更新列表，完成后在过滤器输入“ddns”，在下方選“luci-app-ddns-go”点安装。</p>
 <p>刷新路由器管理界面，点“服务 -&gt; DDNS-GO”，勾选「启用」，点下方保存并应用，然後「打開 Web 界面」。</p>
 <p>DNS服务商按需選擇，本文选 Cloudflare，然後点下方提示链接跳转至 Cloudflare 创建令牌。复制令牌回来填入下方「Token」栏。取消勾选“是否启用” IPv4，勾选“是否启用” IPv6。「<strong>获取 IP 方式</strong>」選「通過命令获取」。因爲前两个选项获取到的 IPv6 地址都不是電腦的而是路由器的。</p>
-<h3 id="路由器获取局域网中-指定设备-IPv6-地址的命令"><a href="#路由器获取局域网中-指定设备-IPv6-地址的命令" class="headerlink" title="路由器获取局域网中 指定设备 IPv6 地址的命令"></a>路由器获取局域网中 指定设备 IPv6 地址的命令</h3><p>请参考<a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go/wiki/%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%8E%B7%E5%8F%96IP%E5%8F%82%E8%80%83">通过命令获取IP参考 · jeessy2&#x2F;ddns-go Wiki (github.com)</a> 或者 <a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go/issues/531#issuecomment-1436365286">通过命令获取IP参考 · Issue #531 · jeessy2&#x2F;ddns-go (github.com)</a>。</p>
+<h3 id="路由器获取局域网中指定设备-IPv6-地址的命令"><a href="#路由器获取局域网中指定设备-IPv6-地址的命令" class="headerlink" title="路由器获取局域网中指定设备 IPv6 地址的命令"></a>路由器获取局域网中指定设备 IPv6 地址的命令</h3><p>请参考<a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go/wiki/%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%8E%B7%E5%8F%96IP%E5%8F%82%E8%80%83">通过命令获取IP参考 · jeessy2&#x2F;ddns-go Wiki (github.com)</a> 或者 <a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go/issues/531#issuecomment-1436365286">通过命令获取IP参考 · Issue #531 · jeessy2&#x2F;ddns-go (github.com)</a>。</p>
 <p>命令格式爲：</p>
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">ip</span> -<span class="hljs-number">6</span> route | awk <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$1</span>&#125;&#x27;</span> | awk <span class="hljs-string">&#x27;/240:?/&#x27;</span> | awk -F::/ <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$1</span> &quot;:suffix of other mac&quot;&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
 
