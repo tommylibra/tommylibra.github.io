@@ -6,7 +6,7 @@
   <link href="https://tommylibra.site/feed.xml" rel="self"/>
   
   <link href="https://tommylibra.site/"/>
-  <updated>2024-06-10T16:07:00.859Z</updated>
+  <updated>2024-08-12T08:34:02.533Z</updated>
   <id>https://tommylibra.site/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title></title>
+    <link href="https://tommylibra.site/2024/08/12/%E5%9C%A8%20OpenWrt%20%E4%B8%8A%E9%85%8D%E7%BD%AE%20IPv6%20%E7%89%88%20DDNS%20%E5%AF%A6%E7%8F%BE%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E7%9A%84%E8%AE%BF%E9%97%AE/"/>
+    <id>https://tommylibra.site/2024/08/12/%E5%9C%A8%20OpenWrt%20%E4%B8%8A%E9%85%8D%E7%BD%AE%20IPv6%20%E7%89%88%20DDNS%20%E5%AF%A6%E7%8F%BE%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E7%9A%84%E8%AE%BF%E9%97%AE/</id>
+    <published>2024-08-12T06:26:50.834Z</published>
+    <updated>2024-08-12T08:34:02.533Z</updated>
+    
+    <content type="html"><![CDATA[<p>Windows 平臺上真·远程桌面的意思是，只要 PC 接入了互联网开着机，就可以用另一台設備通過互联网從世界任意角落访问使用它。然而，PC 的 IPv4 地址不固定为此带来了麻煩。FRP 内网穿透技术是一種应对方案。DDNS（動態DNS）技术是另一种（當然其用途不止远程桌面）。原理上來說，後者更简洁，流量不像前者需要经过中转服务器。然而，由於國內的电信运营商（例如我所用的移动家宽）甚至连動態公网 IPv4 也不分配了，欲通過配置 IPv4 的 DDNS 来实现外网访问也成了不可能。这时候配置 IPv6 的 DDNS 似乎成了唯一的优解。</p><p>我用的小米路由器官方固件虽有 DDNS 功能，却不支持 IPv6 特性，所以我把它刷成了 ImmortalWrt —— OpenWrt 的一個分支。欲按本文思路配置，你需要有：</p><ul><li>一台刷了 OpenWrt 固件的路由器（我的是 openwrt-23.05 branch）</li><li>一個自有域名（本文以 Cloudflare 托管的域名为例）</li></ul><h2 id="前期工作"><a href="#前期工作" class="headerlink" title="前期工作"></a>前期工作</h2><p><strong>首先</strong>，仔细参照這篇文章：<a href="https://rongrongbq.moe/2021/08/firewall-and-DDNS-settings-for-IPv6/">正确地配置 IPv6 防火墙和 DDNS 以在公网访问设备 | 绒布地球 (rongrongbq.moe)</a>。本文的产生完全有賴於這篇文章。<br>该文中，【环境】裏「需要暴露的主机」在本文场景裏爲需要被远程访问的 Windows PC。</p><p>【准备工作】全照做，其中【取得设备的不变后缀】本文按选项一操作（別的我也搞不懂）。</p><p>【配置防火墙】，照做。「目标端口：暴露特定端口」，在本文场景下，可以填远程桌面端口 3389。</p><p>【配置DDNS】章节不照做，本文採用更好懂的图形界面而非脚本操作。</p><h2 id="安装和配置-DDNS-GO"><a href="#安装和配置-DDNS-GO" class="headerlink" title="安装和配置 DDNS-GO"></a>安装和配置 DDNS-GO</h2><p>OpenWrt 提供两个實現 DDNS 的软件包，ddns-scripts 和 ddns-go。本文採用後者。如欲用另一个，也可自行研究。</p><p>在路由器管理界面“系统 -&gt; 软件包”，点更新列表，完成后在过滤器输入“ddns”，在下方選“luci-app-ddns-go”点安装。</p><p>刷新路由器管理界面，点“服务 -&gt; DDNS-GO”，勾选「启用」，点下方保存并应用，然後「打開 Web 界面」。</p><p>DNS服务商按需選擇，本文选 Cloudflare，然後点下方提示链接跳转至 Cloudflare 创建令牌。复制令牌回来填入下方「Token」栏。取消勾选“是否启用” IPv4，勾选“是否启用” IPv6。「<strong>获取 IP 方式</strong>」選「通過命令获取」。因爲前两个选项获取到的 IPv6 地址都不是電腦的而是路由器的。</p><h3 id="路由器获取局域网中-指定设备-IPv6-地址的命令"><a href="#路由器获取局域网中-指定设备-IPv6-地址的命令" class="headerlink" title="路由器获取局域网中 指定设备 IPv6 地址的命令"></a>路由器获取局域网中 指定设备 IPv6 地址的命令</h3><p>请参考<a href="https://github.com/jeessy2/ddns-go/wiki/%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%8E%B7%E5%8F%96IP%E5%8F%82%E8%80%83">通过命令获取IP参考 · jeessy2&#x2F;ddns-go Wiki (github.com)</a> 或者 <a href="https://github.com/jeessy2/ddns-go/issues/531#issuecomment-1436365286">通过命令获取IP参考 · Issue #531 · jeessy2&#x2F;ddns-go (github.com)</a>。</p><p>命令格式爲：</p><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">ip</span> -<span class="hljs-number">6</span> route | awk <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$1</span>&#125;&#x27;</span> | awk <span class="hljs-string">&#x27;/240:?/&#x27;</span> | awk -F::/ <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$1</span> &quot;:suffix of other mac&quot;&#125;&#x27;</span><br></code></pre></td></tr></table></figure><p>其中， <em>suffix of other mac</em> 替换爲電腦的 IPv6(EUI-64) 后缀（注意：suffix 前的英文冒号不可省略）。關於何为 EUI-64，前面提到的<a href="https://rongrongbq.moe/2021/08/firewall-and-DDNS-settings-for-IPv6/#%E5%8F%96%E5%BE%97%E8%AE%BE%E5%A4%87%E7%9A%84%E4%B8%8D%E5%8F%98%E5%90%8E%E7%BC%80">文章</a>有講。如果不放心，可以 ssh 連接路由器後输入命令看看。</p><p>在 DDNS-GO 面板的 【IPv6】 -&gt; 「获取 IP 方式栏」填入你的命令。</p><h3 id="然後"><a href="#然後" class="headerlink" title="然後"></a>然後</h3><p>來到 Cloudflare 官网（或你的域名服务商），選擇你的域名，添加一条“AAAA”類型的 DNS 记录，名称自定义，它会成为你后续用到的子域名，內容可以临时隨便填一個 IPv6 地址（因爲 DDNS 部署完成后，这个值會自动更新），关闭代理狀態的开关，改为“僅 DNS”（這個我是试出来的，开启连不上），保存。</p><h3 id="之後"><a href="#之後" class="headerlink" title="之後"></a>之後</h3><p>回到 DDNS-GO 面板，在【Domains】栏输入刚才自定义的子域名，也就是“AAAA记录名称.你的域名”。</p><p>该面板其余选项保持默認，点击【保存】。</p><p>一切順利的話，右上角日志会显示更新域名解析成功。至此大功告成。</p><p>接下来，只需要在欲遠程访问该電腦的設備上安装微软官方的 Remote Desktop（RD Client），添加電腦，主机名爲自定义子域名即可。假如报错 0x204，可以参看：<a href="https://www.anyviewer.cn/how-to/remote-desktop-error-code-0x204-2111.html">怎么解决远程桌面错误代码0x204？（3种方法） (anyviewer.cn)</a>。</p><p>其实本文的设置将远程桌面默认端口3389暴露在公网了，可能有些不安全。或许改下防火墙、端口之类的设置可以改善。但我现在还没研究明白，就到此为止啦！</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Windows 平臺上真·远程桌面的意思是，只要 PC 接入了互联网开着机，就可以用另一台設備通過互联网從世界任意角落访问使用它。然而，PC 的 IPv4 地址不固定为此带来了麻煩。FRP 内网穿透技术是一種应对方案。DDNS（動態DNS）技术是另一种（當然其用途不止远程桌</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>對主觀時間流逝速度變快的解釋</title>
