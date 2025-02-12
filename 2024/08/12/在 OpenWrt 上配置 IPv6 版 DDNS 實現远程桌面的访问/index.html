@@ -1,0 +1,712 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Tommy">
+  <meta name="keywords" content="personal, blog">
+  
+    <meta name="description" content="Windows 平臺上真·远程桌面的意思是，只要 PC 接入了互联网开着机，就可以用另一台設備通過互联网從世界任意角落访问使用它。然而，PC 的 IPv4 地址不固定为此带来了麻煩。FRP 内网穿透技术是一種应对方案。DDNS（動態DNS）技术是另一种（當然其用途不止远程桌面）。原理上來說，後者更简洁，流量不像前者需要经过中转服务器。然而，由於國內的电信运营商（例如我所用的移动家宽）甚至连動態公网">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 OpenWrt 上配置 IPv6 版 DDNS 實現远程桌面的访问">
+<meta property="og:url" content="https://tommylibra.github.io/2024/08/12/%E5%9C%A8%20OpenWrt%20%E4%B8%8A%E9%85%8D%E7%BD%AE%20IPv6%20%E7%89%88%20DDNS%20%E5%AF%A6%E7%8F%BE%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E7%9A%84%E8%AE%BF%E9%97%AE/index.html">
+<meta property="og:site_name" content="停雲">
+<meta property="og:description" content="Windows 平臺上真·远程桌面的意思是，只要 PC 接入了互联网开着机，就可以用另一台設備通過互联网從世界任意角落访问使用它。然而，PC 的 IPv4 地址不固定为此带来了麻煩。FRP 内网穿透技术是一種应对方案。DDNS（動態DNS）技术是另一种（當然其用途不止远程桌面）。原理上來說，後者更简洁，流量不像前者需要经过中转服务器。然而，由於國內的电信运营商（例如我所用的移动家宽）甚至连動態公网">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2024-08-12T08:30:05.000Z">
+<meta property="article:modified_time" content="2024-08-12T14:45:56.057Z">
+<meta property="article:author" content="Tommy">
+<meta property="article:tag" content="tech">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>在 OpenWrt 上配置 IPv6 版 DDNS 實現远程桌面的访问 - 停雲</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"tommylibra.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":"tANqfgm93AFaBRjt1xXxWwC8-9Nh9j0Va","app_key":"8I3XuiJezVZ6wISuq2mO0npb","server_url":"https://tanqfgm9.lc-cn-e1-shared.com","path":"window.location.pathname","ignore_local":true}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+    <!-- Google Analytics -->
+    <script async>
+      if (!Fluid.ctx.dnt) {
+        Fluid.utils.createScript('https://www.google-analytics.com/analytics.js', function() {
+          window.ga = window.ga || function() { (ga.q = ga.q || []).push(arguments) };
+          ga.l = +new Date;
+          ga('create', '[object Object]', 'auto');
+          ga('send', 'pageview');
+        });
+      }
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/feed.xml" title="停雲" type="application/atom+xml">
+</head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>停雲</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>歸檔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>關於</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="在 OpenWrt 上配置 IPv6 版 DDNS 實現远程桌面的访问"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-08-12 16:30" pubdate>
+          2024年8月12日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分鐘
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">在 OpenWrt 上配置 IPv6 版 DDNS 實現远程桌面的访问</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Windows 平臺上真·远程桌面的意思是，只要 PC 接入了互联网开着机，就可以用另一台設備通過互联网從世界任意角落访问使用它。然而，PC 的 IPv4 地址不固定为此带来了麻煩。FRP 内网穿透技术是一種应对方案。DDNS（動態DNS）技术是另一种（當然其用途不止远程桌面）。原理上來說，後者更简洁，流量不像前者需要经过中转服务器。然而，由於國內的电信运营商（例如我所用的移动家宽）甚至连動態公网 IPv4 也不分配了，欲通過配置 IPv4 的 DDNS 来实现外网访问也成了不可能。这时候配置 IPv6 的 DDNS 似乎成了唯一的优解。</p>
+<p>我用的小米路由器官方固件虽有 DDNS 功能，却不支持 IPv6 特性，所以我把它刷成了 ImmortalWrt —— OpenWrt 的一個分支。欲按本文思路配置，你需要有：</p>
+<ul>
+<li>一台刷了 OpenWrt 固件的路由器（我的是 openwrt-23.05 branch）</li>
+<li>一個自有域名（本文以 Cloudflare 托管的域名为例）</li>
+</ul>
+<h2 id="前期工作"><a href="#前期工作" class="headerlink" title="前期工作"></a>前期工作</h2><p><strong>首先</strong>，仔细参照這篇文章：<a target="_blank" rel="noopener" href="https://rongrongbq.moe/2021/08/firewall-and-DDNS-settings-for-IPv6/">正确地配置 IPv6 防火墙和 DDNS 以在公网访问设备 | 绒布地球 (rongrongbq.moe)</a>。本文的产生完全有賴於這篇文章。<br>该文中，【环境】裏「需要暴露的主机」在本文场景裏爲需要被远程访问的 Windows PC。</p>
+<p>【准备工作】全照做，其中【取得设备的不变后缀】本文按选项一操作（別的我也搞不懂）。</p>
+<p>【配置防火墙】，照做。「目标端口：暴露特定端口」，在本文场景下，可以填远程桌面端口 3389。</p>
+<p>【配置DDNS】章节不照做，本文採用更好懂的图形界面而非脚本操作。</p>
+<h2 id="安装和配置-DDNS-GO"><a href="#安装和配置-DDNS-GO" class="headerlink" title="安装和配置 DDNS-GO"></a>安装和配置 DDNS-GO</h2><p>OpenWrt 提供两个實現 DDNS 的软件包，ddns-scripts 和 ddns-go。本文採用後者。如欲用另一个，也可自行研究。</p>
+<p>在路由器管理界面“系统 -&gt; 软件包”，点更新列表，完成后在过滤器输入“ddns”，在下方選“luci-app-ddns-go”点安装。</p>
+<p>刷新路由器管理界面，点“服务 -&gt; DDNS-GO”，勾选「启用」，点下方保存并应用，然後「打開 Web 界面」。</p>
+<p>DNS服务商按需選擇，本文选 Cloudflare，然後点下方提示链接跳转至 Cloudflare 创建令牌。复制令牌回来填入下方「Token」栏。取消勾选“是否启用” IPv4，勾选“是否启用” IPv6。「<strong>获取 IP 方式</strong>」選「通過命令获取」。因爲前两个选项获取到的 IPv6 地址都不是電腦的而是路由器的。</p>
+<h3 id="路由器获取局域网中指定设备-IPv6-地址的命令"><a href="#路由器获取局域网中指定设备-IPv6-地址的命令" class="headerlink" title="路由器获取局域网中指定设备 IPv6 地址的命令"></a>路由器获取局域网中指定设备 IPv6 地址的命令</h3><p>请参考<a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go/wiki/%E9%80%9A%E8%BF%87%E5%91%BD%E4%BB%A4%E8%8E%B7%E5%8F%96IP%E5%8F%82%E8%80%83">通过命令获取IP参考 · jeessy2&#x2F;ddns-go Wiki (github.com)</a> 或者 <a target="_blank" rel="noopener" href="https://github.com/jeessy2/ddns-go/issues/531#issuecomment-1436365286">通过命令获取IP参考 · Issue #531 · jeessy2&#x2F;ddns-go (github.com)</a>。</p>
+<p>命令格式爲：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">ip</span> -<span class="hljs-number">6</span> route | awk <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$1</span>&#125;&#x27;</span> | awk <span class="hljs-string">&#x27;/240:?/&#x27;</span> | awk -F::/ <span class="hljs-string">&#x27;&#123;print <span class="hljs-variable">$1</span> &quot;:suffix of other mac&quot;&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>其中， <em>suffix of other mac</em> 替换爲電腦的 IPv6(EUI-64) 后缀（注意：suffix 前的英文冒号不可省略）。關於何为 EUI-64，前面提到的<a target="_blank" rel="noopener" href="https://rongrongbq.moe/2021/08/firewall-and-DDNS-settings-for-IPv6/#%E5%8F%96%E5%BE%97%E8%AE%BE%E5%A4%87%E7%9A%84%E4%B8%8D%E5%8F%98%E5%90%8E%E7%BC%80">文章</a>有講。如果不放心，可以 ssh 連接路由器後输入命令看看。</p>
+<p>在 DDNS-GO 面板的 【IPv6】 -&gt; 「获取 IP 方式栏」填入你的命令。</p>
+<h3 id="然後"><a href="#然後" class="headerlink" title="然後"></a>然後</h3><p>來到 Cloudflare 官网（或你的域名服务商），選擇你的域名，添加一条“AAAA”類型的 DNS 记录，名称自定义，它会成为你后续用到的子域名，內容可以临时隨便填一個 IPv6 地址（因爲 DDNS 部署完成后，这个值會自动更新），关闭代理狀態的开关，改为“僅 DNS”（這個我是试出来的，开启连不上），保存。</p>
+<h3 id="之後"><a href="#之後" class="headerlink" title="之後"></a>之後</h3><p>回到 DDNS-GO 面板，在【Domains】栏输入刚才自定义的子域名，也就是“AAAA记录名称.你的域名”。</p>
+<p>该面板其余选项保持默認，点击【保存】。</p>
+<p>一切順利的話，右上角日志会显示更新域名解析成功。至此大功告成。</p>
+<p>接下来，只需要在欲遠程访问该電腦的設備上安装微软官方的 Remote Desktop（RD Client），添加電腦，主机名爲自定义子域名即可。假如报错 0x204，可以参看：<a target="_blank" rel="noopener" href="https://www.anyviewer.cn/how-to/remote-desktop-error-code-0x204-2111.html">怎么解决远程桌面错误代码0x204？（3种方法） (anyviewer.cn)</a>。</p>
+<p>其实本文的设置将远程桌面默认端口3389暴露在公网了，可能有些不安全。或许改下防火墙、端口之类的设置可以改善。但我现在还没研究明白，就到此为止啦！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/tech/">#tech</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>在 OpenWrt 上配置 IPv6 版 DDNS 實現远程桌面的访问</div>
+      <div>https://tommylibra.github.io/2024/08/12/在 OpenWrt 上配置 IPv6 版 DDNS 實現远程桌面的访问/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Tommy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2024年8月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/09/18/%E8%AF%AD%E8%A8%80%E7%9A%84%E5%A4%B1%E7%81%B5/" title="语言的失灵">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">语言的失灵</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/06/09/%E4%B8%BB%E8%A7%80%E6%99%82%E9%96%93%E6%B5%81%E9%80%9D%E9%80%9F%E5%BA%A6%E8%AE%8A%E5%BF%AB%E7%9A%84%E8%A7%A3%E9%87%8B/" title="對主觀時間流逝速度變快的解釋">
+                        <span class="hidden-mobile">對主觀時間流逝速度變快的解釋</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+    <div id="giscus" class="giscus"></div>
+    <script type="text/javascript">
+      Fluid.utils.loadComments('#giscus', function() {
+        var options = {"repo":"tommylibra/tommylibra.github.io","repo-id":"R_kgDOIgnhrw","category":"General","category-id":"DIC_kwDOIgnhr84Cm6Qe","theme-light":"light","theme-dark":"dark","mapping":"title","reactions-enabled":1,"emit-metadata":0,"input-position":"top","lang":"zh-CN"};
+        var attributes = {};
+        for (let option in options) {
+          if (!option.startsWith('theme-')) {
+            var key = option.startsWith('data-') ? option : 'data-' + option;
+            attributes[key] = options[option];
+          }
+        }
+        var light = 'light';
+        var dark = 'dark';
+        window.GiscusThemeLight = light;
+        window.GiscusThemeDark = dark;
+        attributes['data-theme'] = document.documentElement.getAttribute('data-user-color-scheme') === 'dark' ? dark : light;
+        for (let attribute in attributes) {
+          var value = attributes[attribute];
+          if (value === undefined || value === null || value === '') {
+            delete attributes[attribute];
+          }
+        }
+        var s = document.createElement('script');
+        s.setAttribute('src', 'https://giscus.app/client.js');
+        s.setAttribute('crossorigin', 'anonymous');
+        for (let attribute in attributes) {
+          s.setAttribute(attribute, attributes[attribute]);
+        }
+        var ss = document.getElementsByTagName('script');
+        var e = ss.length > 0 ? ss[ss.length - 1] : document.head || document.documentElement;
+        e.parentNode.insertBefore(s, e.nextSibling);
+      });
+    </script>
+    <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>
