@@ -1,5 +1,0 @@
-@font-face {
-  font-family: Ming;
-  src: url("../fonts/Ming.woff2") format("truetype");
-  font-weight: 400;
-}
